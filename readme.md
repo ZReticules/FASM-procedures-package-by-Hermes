@@ -19,7 +19,7 @@ The main goal of this package is to provide a customizable and optimal set of ma
 		- [Memory and addresses](#memory-and-addresses)
 - [New features](#new-features)  
 	- [Nested procedures](#nested-procedures)
-	- [List of variables](#list-of-variables)
+	- [List of variables](#list-of-variables-as-a-procedure-parameter)
 
 <i><u>Important! All local variables and arguments must start with a dot in case they are plain labels based on the stack frame by the <b>`virtual`</b> directive. Therefore, it's highly recommended to use inside procedure labels that also start with a dot.</u></i> 
 ## Procedure definition
