@@ -1,0 +1,80 @@
+FORMAT PE64 CONSOLE
+
+
+include "win64ax.inc"
+__architecture fix x64
+include "new_proc.inc"
+
+entry main
+
+section ".idata" import readable writeable
+
+library msvcrt, "msvcrt.dll",\
+	kernel32, "kernel32.dll"
+
+import msvcrt,\
+	puts,"puts",\
+	putws, "_putws",\
+	time, "time",\
+	srand, "srand",\
+	rand, "rand",\
+	malloc, "malloc",\
+	free, "free",\
+	printf, "printf",\
+	qsort, "qsort"
+
+import kernel32,\
+	ExitProcess, "ExitProcess"
+
+section ".code" code readable executable
+
+.proc_frame_mode_static
+
+.proc proc_test(.size:DWORD) uses rbx rdi
+	mov [.size], ecx
+	@ccall [malloc], addr rcx * 4
+	mov rdi, rax
+
+	@ccall [time], NULL
+	@ccall [srand], rax
+	mov ebx, [.size]
+	@@:
+		@ccall [rand]
+		xor edx, edx
+		div [.size]
+		mov [rdi + (rbx - 1) * 4], edx
+	dec ebx
+	jnz @b
+
+	@ccall [puts], "Random array:"
+	@ccall .print_array
+
+	@ccall [qsort], rdi, [.size], 4, .comparator
+	
+	@ccall [putws], L "Sorted array:"
+	@ccall .print_array
+
+	@ccall [free], rdi
+	ret
+
+	.proc .print_array<.size>
+		xor ebx, ebx
+		@@:
+			@ccall [printf], <09h, "%d", 0Ah>, dword[rdi + rbx * 4]
+			inc ebx
+		cmp ebx, dword[.size]
+		jnz @b
+		ret
+	.endp
+
+	.proc .comparator(.elem1, .elem2)
+		mov eax, [rcx]
+		sub eax, [rdx]
+		ret
+	.endp
+.endp
+
+.proc main
+	@ccall proc_test, 10
+	ret
+.endp
