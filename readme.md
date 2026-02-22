@@ -128,7 +128,7 @@ Also compatibility for specifiers and argument types:
 
 | Type\specifier | qword | dword | word | byte | double | float | real |
 | - | - | - | - | - | - | - | - |
-| GPR | x86-64 only | + | + | + | + | x86-64 only | + | - |
+| GPR | x86-64 only | + | + | + | | x86-64 only + | + | - |
 | SSE | + | + | - | - | + | + | - |
 | Numeric literal | + | + | + | + | + | + | + | + |
 | Memory | + | + | + | + | + | + | + | + |
