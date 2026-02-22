@@ -1245,27 +1245,27 @@ body .markdown-body
 3. Lack of some helpful features, which may be easily added, like nested procedures or a parameter list as a parameter of a procedure</p>
 <h2 id="contents">Contents<a class="headerlink" href="#contents" title="Permanent link"></a></h2>
 <ul>
-<li>Procedure definition  <ul>
-<li>Argument types  </li>
-<li>Calling conventions  </li>
-<li>Examples</li>
+<li><a href="#procedure-definition">Procedure definition</a>  <ul>
+<li><a href="#argument-types">Argument types</a>  </li>
+<li><a href="#calling-conventions">Calling conventions</a>  </li>
+<li><a href="#examples">Examples</a></li>
 </ul>
 </li>
-<li>local variables</li>
-<li>Frame modes</li>
-<li>Procedure invocation<ul>
-<li>Side effects</li>
-<li>Arguments<ul>
-<li>Size/type specifiers</li>
-<li>Constants</li>
-<li>Memory and addresses</li>
+<li><a href="#local-variables">Local variables</a></li>
+<li><a href="#frame-modes">Frame modes</a></li>
+<li><a href="#procedure-invocation">Procedure invocation</a><ul>
+<li><a href="#side-effects">Side effects</a></li>
+<li><a href="#arguments">Arguments</a><ul>
+<li><a href="#size-and-type-specifiers">Size and type specifiers</a></li>
+<li><a href="#constants">Constants</a></li>
+<li><a href="#memory-and-addresses">Memory and addresses</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li>New features  <ul>
-<li>Nested procedures</li>
-<li>List of variables</li>
+<li><a href="#new-features">New features</a>  <ul>
+<li><a href="#nested-procedures">Nested procedures</a></li>
+<li><a href="#list-of-variables">List of variables</a></li>
 </ul>
 </li>
 </ul>
@@ -1342,8 +1342,8 @@ All those macros have the same syntax, similar to standard macros for procedure 
 <code>@ccall foo, [eax], eax, addr ecx + edx + 5</code><br />
 In this case, before argument loading, eax will be saved into a stack variable, then destroyed for address calculation, then restored for the second argument, and, in case it was restored earlier, it will not be restored for the first argument. Besides, if the address contains only one register, eax will not be destroyed.  </p>
 <h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link"></a></h3>
-<p><b><i>All specifiers/keywords are case-sensitive and must be in lower-case.</i></b>  </p>
-<h4 id="sizetype-specifiers">Size/type specifiers<a class="headerlink" href="#sizetype-specifiers" title="Permanent link"></a></h4>
+<p><u><i>All specifiers/keywords are case-sensitive and must be in lower-case.</i></u>  </p>
+<h4 id="size-and-type-specifiers">Size and type specifiers<a class="headerlink" href="#size-and-type-specifiers" title="Permanent link"></a></h4>
 <p>For almost any type of argument that you can pass in a procedure, you can use a specifier. It tells macro what size and what kind of data you want to pass, usually integer or float. List of specifiers:  </p>
 <ul>
 <li><code>qword</code>  </li>

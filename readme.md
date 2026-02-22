@@ -5,21 +5,21 @@ The main goal of this package is to provide a customizable and optimal set of ma
 2. Default marcos uses a high amount of compiler and preprocessor resources for, in the author's opinion, completely unnecessary reasons  
 3. Lack of some helpful features, which may be easily added, like nested procedures or a parameter list as a parameter of a procedure
 ## Contents
-- Procedure definition  
-	- Argument types  
-	- Calling conventions  
-	- Examples
-- local variables
-- Frame modes
-- Procedure invocation
-	- Side effects
-	- Arguments
-		- Size/type specifiers
-		- Constants
-		- Memory and addresses
-- New features  
-	- Nested procedures
-	- List of variables
+- [Procedure definition](#procedure-definition)  
+	- [Argument types](#argument-types)  
+	- [Calling conventions](#calling-conventions)  
+	- [Examples](#examples)
+- [Local variables](#local-variables)
+- [Frame modes](#frame-modes)
+- [Procedure invocation](#procedure-invocation)
+	- [Side effects](#side-effects)
+	- [Arguments](#arguments)
+		- [Size and type specifiers](#size-and-type-specifiers)
+		- [Constants](#constants)
+		- [Memory and addresses](#memory-and-addresses)
+- [New features](#new-features)  
+	- [Nested procedures](#nested-procedures)
+	- [List of variables](#list-of-variables)
 
 <i><u>Important! All local variables and arguments must start with a dot in case they are plain labels based on the stack frame by the <b>`virtual`</b> directive. Therefore, it's highly recommended to use inside procedure labels that also start with a dot.</u></i> 
 ## Procedure definition
@@ -101,8 +101,8 @@ In x86-64 invocation macros, xmm5 and r11 can be destroyed at any moment. In x86
 `@ccall foo, [eax], eax, addr ecx + edx + 5`  
 In this case, before argument loading, eax will be saved into a stack variable, then destroyed for address calculation, then restored for the second argument, and, in case it was restored earlier, it will not be restored for the first argument. Besides, if the address contains only one register, eax will not be destroyed.  
 ### Arguments
-<b><i>All specifiers/keywords are case-sensitive and must be in lower-case.</i></b>  
-#### Size/type specifiers
+<u><i>All specifiers/keywords are case-sensitive and must be in lower-case.</i></u>  
+#### Size and type specifiers
 For almost any type of argument that you can pass in a procedure, you can use a specifier. It tells macro what size and what kind of data you want to pass, usually integer or float. List of specifiers:  
 
 - `qword`  
