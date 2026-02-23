@@ -486,19 +486,19 @@ rept 1{
 	macro @get_fast_dword_SSE dest\{
 		movd xmm0, eax
 	\}
-	macro @get_std_double_FPU dest\{
+	macro @get_fast_double_FPU dest\{
 		procbuf_alloc floatbuf, 8
 		movq [floatbuf], xmm0
 		fld qword[floatbuf]
 		procbuf_free floatbuf
 	\}
-	macro @get_std_float_FPU dest\{
+	macro @get_fast_float_FPU dest\{
 		procbuf_alloc floatbuf, 4
 		movd [floatbuf], xmm0
 		fld dword[floatbuf]
 		procbuf_free floatbuf
 	\}
-	macro @get_std_sep_qword dest\{
+	macro @get_fast_sep_qword dest\{
 		match _mp1:_mp2, dest\\{
 			mov r11, rax
 			if ~_mp2 eq eax

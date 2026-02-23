@@ -227,9 +227,9 @@ rept 1{
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
 			push litval shr 32
-			push litval and 0xFFFF
+			push litval and 0xFFFFFFFF
 		else
-			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFF
+			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		end if
 	\}
@@ -265,9 +265,9 @@ rept 1{
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
 			push litval shr 32
-			push litval and 0xFFFF
+			push litval and 0xFFFFFFFF
 		else
-			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFF
+			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		end if
 	\}
@@ -685,23 +685,37 @@ rept 1{
 		procbuf_free floatbuf
 	\}
 	macro @get_std_qword_SSE dest\{
-		movd xmm1, edx
-		movd xmm0, eax
-		psllq xmm1, 32
-		por xmm0, xmm1
+		match =xmm1, dest\\{
+			movd xmm0, edx
+			movd dest, eax
+			psllq xmm0, 32
+			por dest, xmm0
+		rept 0\\{\\}rept 1\\{
+			movd xmm1, edx
+			movd dest, eax
+			psllq xmm1, 32
+			por dest, xmm1
+		\\}
 	\}
 	macro @get_std_dword_SSE dest\{
-		movd xmm0, eax
+		movd dest, eax
 	\}
 	macro @get_std_double_FPU dest\{\}
 	macro @get_std_float_FPU dest\{\}
 	macro @get_std_sep_qword dest\{
-		match _mp1:_mp2, dest\\{
-			if ~_mp2 eq eax
-				mov _mp2, eax
-			end if
-			if ~_mp1 eq edx
+		match =eax:=edx, dest\\{
+			xchg eax, edx
+		rept 0\\{\\}match _mp1:_mp2, dest\\{
+			if ~_mp2 eq edx
+				if ~_mp2 eq eax
+					mov _mp2, eax
+				end if
+				if ~_mp1 eq edx
+					mov _mp1, edx
+				end if
+			else
 				mov _mp1, edx
+				mov _mp2, eax
 			end if
 		\\}
 	\}

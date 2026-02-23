@@ -215,7 +215,7 @@ rept 1{
 	local litval
 	macro @set_std_qword_lit src\{
 		litval = qword src
-		mov eax, litval and 0xFFFF
+		mov eax, litval and 0xFFFFFFFF
 		mov edx, litval shr 32
 	\}
 	macro @set_std_dword_lit src\{
