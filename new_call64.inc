@@ -174,7 +174,7 @@ rept 1{
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		rept 0\\{\\}rept 1\\{
 			mov r11, litval
-			movq reg_double_\#argn, litval
+			movq reg_double_\#argn, r11
 		\\}
 	\}
 	macro fast@load_float_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -185,7 +185,7 @@ rept 1{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
 			mov r11d, litval
-			movd reg_double_\#argn, litval
+			movd reg_double_\#argn, r11d
 		\\}
 	\}
 	macro fast@load_real_lit args_start, stack_space, stack_counter, argn, adef\{
