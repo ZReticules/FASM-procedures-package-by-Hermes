@@ -126,7 +126,8 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		litval = qword adef
 		match =GT, cmpres\\{
-			mov qword[args_start + stack_space - stack_counter], litval
+			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
+			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		rept 0\\{\\}rept 1\\{
 			mov reg_qword_\#argn, litval
 		\\}
@@ -169,7 +170,8 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		litval = qword adef
 		match =GT, cmpres\\{
-			mov qword[args_start + stack_space - stack_counter], litval
+			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
+			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		rept 0\\{\\}rept 1\\{
 			mov r11, litval
 			movq reg_double_\#argn, litval
@@ -481,10 +483,10 @@ rept 1{
 		\\}
 	\}
 	macro @get_fast_qword_SSE dest\{
-		movq xmm0, rax
+		movq dest, rax
 	\}
 	macro @get_fast_dword_SSE dest\{
-		movd xmm0, eax
+		movd dest, eax
 	\}
 	macro @get_fast_double_FPU dest\{
 		procbuf_alloc floatbuf, 8

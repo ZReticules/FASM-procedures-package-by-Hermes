@@ -551,10 +551,6 @@ rept 1{
 					if current@frame < stack_size
 						current@frame = stack_size
 					end if
-				; else
-				; 	if stack_space
-				; 		lea esp, [esp - stack_size]
-				; 	end if
 				end if
 			end if
 			\forward
@@ -607,10 +603,6 @@ rept 1{
 					if current@frame < stack_size
 						current@frame = stack_size
 					end if
-				; else
-				; 	if stack_space
-				; 		lea esp, [esp - stack_size]
-				; 	end if
 				end if
 			end if
 			\forward
