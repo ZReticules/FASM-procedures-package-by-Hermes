@@ -320,7 +320,7 @@ rept 1 {
 				\\\\}
 				define _def ..bytes
 			\\\}
-			match =_type _mp1 _mp2, _type src\\\{
+			match -_mp1, src\\\{rept 0\\\{\\\}match =_type _mp1 _mp2, _type src\\\{
 				match [_mp3], _mp2\\\\{
 					define _type _mp1 mem
 					define _def _mp2
