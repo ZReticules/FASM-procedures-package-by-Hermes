@@ -42,18 +42,20 @@ rept 1{
 	define reg_double_#4 xmm3
 	local cmpres
 	local _mp1, _mp2
-	local _stack_space, _stack_counter
+	local _stack_counter
 	local arg_type, arg_def, cntr, arg_cnt
 	local _argN
+	
 	macro fast@va_load args_start, stack_space, stack_counter, argn, atype, adef\{
-		match _mp1, atype\\{
-			match _mp2, fast@load_\\#_mp1\\\{
-				_mp2 args_start, stack_space, stack_counter, argn, adef
+		match _mp1 _mp2, atype\\{
+			match _mp3, fast@load_\\#_mp1\\#_\\#_mp2\\\{
+				_mp3 args_start, stack_space, stack_counter, argn, adef
 			\\\}
 		\\}
 	\}
 	macro fast@load_va_list args_start, stack_space, stack_counter, argn, [adef]\{
 		\common
+		\local _stack_space 
 		stack_counter = stack_counter + 8
 		_stack_counter = 0
 		cntr equ 0
@@ -297,7 +299,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			movq [args_start + stack_space - stack_counter], adef
+			movq qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movq reg_qword_\#argn, adef
 		\\}
@@ -306,7 +308,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			movd [args_start + stack_space - stack_counter], adef
+			movd dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movd reg_dword_\#argn, adef
 		\\}
@@ -315,7 +317,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			movq [args_start + stack_space - stack_counter], adef
+			movq qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movq reg_double_\#argn, adef
 		\\}
@@ -324,7 +326,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			movd [args_start + stack_space - stack_counter], adef
+			movd dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movd reg_double_\#argn, adef
 		\\}

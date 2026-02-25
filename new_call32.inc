@@ -30,20 +30,21 @@ rept 1{
 
 rept 1{
 	local _mp1, _mp2
-	local _stack_space, _stack_counter
+	local _stack_counter
 	local arg_type, arg_def, cntr, arg_cnt
 	local _argN
 	local checkAx
 
-	macro cdecl@va_load args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, atype, adef\{
-		match _mp1, atype\\{
-			match _mp2, cdecl@load_\\#_mp1\\\{
-				_mp2 args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef
+	macro cdecl@va_load args_start, stack_space, stack_counter, argn, atype, adef\{
+		match _mp1 _mp2, atype\\{
+			match _mp3, cdecl@load_\\#_mp1\\#_\\#_mp2\\\{
+				_mp3 args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef
 			\\\}
 		\\}
 	\}
 	macro cdecl@load_va_list args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, [adef]\{
 		\common
+		\local _stack_space 
 		stack_counter = stack_counter + 4
 		_stack_counter = 0
 		cntr equ 0
@@ -305,7 +306,7 @@ rept 1{
 			\\}
 		else
 			movq xmm5, qword adef
-			movq [args_start + stack_space - stack_counter], xmm5
+			movq qword[args_start + stack_space - stack_counter], xmm5
 		end if
 	\}
 	macro cdecl@load_dword_mem args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -321,7 +322,7 @@ rept 1{
 			push dword adef
 		else
 			movd xmm5, dword adef
-			movd [args_start + stack_space - stack_counter], xmm5
+			movd dword[args_start + stack_space - stack_counter], xmm5
 		end if
 	\}
 	macro cdecl@load_word_mem args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -437,36 +438,36 @@ rept 1{
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
 			sub esp, 8
-			movq [esp], adef
+			movq qword[esp], adef
 		else
-			movq [args_start + stack_space - stack_counter], adef
+			movq qword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_dword_SSE args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
 			sub esp, 8
-			movd [esp], adef
+			movd dword[esp], adef
 		else
-			movd [args_start + stack_space - stack_counter], adef
+			movd dword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_double_SSE args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
 			sub esp, 8
-			movq [esp], adef
+			movq qword[esp], adef
 		else
-			movq [args_start + stack_space - stack_counter], adef
+			movq qword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_float_SSE args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
 			sub esp, 8
-			movd [esp], adef
+			movd dword[esp], adef
 		else
-			movd [args_start + stack_space - stack_counter], adef
+			movd dword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_dword_GPR args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
