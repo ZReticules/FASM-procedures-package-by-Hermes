@@ -35,7 +35,7 @@ rept 1{
 	local _argN
 	local checkAx
 
-	macro cdecl@va_load args_start, stack_space, stack_counter, argn, atype, adef\{
+	macro cdecl@va_load args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, atype, adef\{
 		match _mp1 _mp2, atype\\{
 			match _mp3, cdecl@load_\\#_mp1\\#_\\#_mp2\\\{
 				_mp3 args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef
@@ -72,7 +72,7 @@ rept 1{
 		if ~defined current@frame & args_start eq esp
 			push eax
 		else
-			mov [args_start + stack_space - stack_counter], eax
+			mov dword[args_start + stack_space - stack_counter], eax
 		end if
 	\}
 	macro cdecl@load_sep_qword args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -85,7 +85,7 @@ rept 1{
 			if ~defined current@frame & args_start eq esp
 				push _mp2
 			else
-				mov [args_start + stack_space - stack_counter], _mp2
+				mov dword[args_start + stack_space - stack_counter], _mp2
 			end if
 			if _mp1 eq eax & ax_state and @$AX_DESTROYED
 				ax_state = (ax_state or @$AX_NEED_SAVE) xor @$AX_DESTROYED
@@ -104,7 +104,7 @@ rept 1{
 			if ~defined current@frame & args_start eq esp
 				push adef
 			else
-				mov [args_start + stack_space - stack_counter], adef
+				mov dword[args_start + stack_space - stack_counter], adef
 			end if
 		else if adef relativeto eax
 			if ax_state and @$AX_DESTROYED
@@ -147,7 +147,7 @@ rept 1{
 			if ~defined current@frame & args_start eq esp
 				push eax
 			else
-				mov [args_start + stack_space - stack_counter], eax
+				mov dword[args_start + stack_space - stack_counter], eax
 			end if
 		end if
 	\}
@@ -158,8 +158,8 @@ rept 1{
 				push 0
 				push adef
 			else
-				mov [args_start + stack_space - stack_counter], adef
-				mov [args_start + stack_space - stack_counter + 4], 0
+				mov dword[args_start + stack_space - stack_counter], adef
+				mov dword[args_start + stack_space - stack_counter + 4], 0
 			end if
 		else if adef relativeto eax
 			if ax_state and @$AX_DESTROYED
@@ -177,7 +177,7 @@ rept 1{
 				if adef - eax <> 0
 					add dword[args_start + stack_space - stack_counter], adef - eax
 				end if
-				mov [args_start + stack_space - stack_counter + 4], 0
+				mov dword[args_start + stack_space - stack_counter + 4], 0
 			end if
 		irp reg, ecx, edx, ebx, esi, edi, esp, ebp\\{
 			else if adef relativeto reg
@@ -192,7 +192,7 @@ rept 1{
 					if adef - reg <> 0
 						add dword[args_start + stack_space - stack_counter], adef - reg
 					end if
-					mov [args_start + stack_space - stack_counter + 4], 0
+					mov dword[args_start + stack_space - stack_counter + 4], 0
 				end if
 		\\}
 		else
@@ -207,8 +207,8 @@ rept 1{
 				push 0
 				push eax
 			else
-				mov [args_start + stack_space - stack_counter], eax
-				mov [args_start + stack_space - stack_counter + 4], 0
+				mov dword[args_start + stack_space - stack_counter], eax
+				mov dword[args_start + stack_space - stack_counter + 4], 0
 			end if
 		end if
 	\}
@@ -218,7 +218,7 @@ rept 1{
 		litval = dword adef
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -227,8 +227,8 @@ rept 1{
 		litval = qword adef
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
-			push litval shr 32
-			push litval and 0xFFFFFFFF
+			push dword litval shr 32
+			push dword litval and 0xFFFFFFFF
 		else
 			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
@@ -238,7 +238,7 @@ rept 1{
 		stack_counter = stack_counter + 4
 		litval = dword adef
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -247,7 +247,7 @@ rept 1{
 		litval = word adef
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -256,7 +256,7 @@ rept 1{
 		litval = byte adef
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -265,8 +265,8 @@ rept 1{
 		litval = qword adef
 		stack_counter = stack_counter + 8
 		if ~defined current@frame & args_start eq esp
-			push litval shr 32
-			push litval and 0xFFFFFFFF
+			push dword litval shr 32
+			push dword litval and 0xFFFFFFFF
 		else
 			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
@@ -276,7 +276,7 @@ rept 1{
 		litval = dword adef
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -285,7 +285,7 @@ rept 1{
 		litval = word adef
 		stack_counter = stack_counter + 4
 		if ~defined current@frame & args_start eq esp
-			push litval
+			push dword litval
 		else
 			mov dword[args_start + stack_space - stack_counter], litval
 		end if
@@ -355,10 +355,9 @@ rept 1{
 		ax_state = ax_state or @$AX_DESTROYED
 		movzx eax, byte adef
 		if ~defined current@frame & args_start eq esp
-			sub esp, 4
-			mov [esp], eax
+			push eax
 		else
-			mov [args_start + stack_space - stack_counter], eax
+			mov dword[args_start + stack_space - stack_counter], eax
 		end if
 	\}
 	macro cdecl@load_double_mem args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -377,7 +376,7 @@ rept 1{
 			\\}
 		else
 			movq xmm5, qword adef
-			movq [args_start + stack_space - stack_counter], xmm5
+			movq qword[args_start + stack_space - stack_counter], xmm5
 		end if
 	\}
 	macro cdecl@load_float_mem args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -393,7 +392,7 @@ rept 1{
 			push dword adef
 		else
 			movd xmm5, dword adef
-			movd [args_start + stack_space - stack_counter], xmm5
+			movd dword[args_start + stack_space - stack_counter], xmm5
 		end if
 	\}
 	macro cdecl@load_real_mem args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -411,7 +410,7 @@ rept 1{
 		else
 			ax_state = ax_state or @$AX_DESTROYED
 			movzx eax, word adef
-			mov [args_start + stack_space - stack_counter], eax
+			mov dword[args_start + stack_space - stack_counter], eax
 		end if
 	\}
 	local origin, opcode, mem_size
@@ -479,7 +478,7 @@ rept 1{
 		if ~defined current@frame & args_start eq esp
 			push adef
 		else
-			mov [args_start + stack_space - stack_counter], adef
+			mov dword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_word_GPR args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -491,7 +490,7 @@ rept 1{
 		if ~defined current@frame & args_start eq esp
 			push adef
 		else
-			mov [args_start + stack_space - stack_counter], adef
+			mov word[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_byte_GPR args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -502,9 +501,9 @@ rept 1{
 		end if
 		if ~defined current@frame & args_start eq esp
 			sub esp, 4
-			mov [esp], adef
+			mov byte[esp], adef
 		else
-			mov [args_start + stack_space - stack_counter], adef
+			mov byte[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load_float_GPR args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, adef\{
@@ -516,7 +515,7 @@ rept 1{
 		if ~defined current@frame & args_start eq esp
 			push adef
 		else
-			mov [args_start + stack_space - stack_counter], adef
+			mov dword[args_start + stack_space - stack_counter], adef
 		end if
 	\}
 	macro cdecl@load args_start, stack_space, stack_counter, ax_state, ax_need_save, ax_place, argn, atype, adef\{

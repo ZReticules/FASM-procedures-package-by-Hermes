@@ -20,7 +20,7 @@ import msvcrt,\
 	rand, "rand",\
 	malloc, "malloc",\
 	free, "free",\
-	printf, "printf",\
+	vprintf, "vprintf",\
 	qsort, "qsort"
 
 import kernel32,\
@@ -60,7 +60,7 @@ section ".code" code readable executable
 	.proc cdecl .print_array<.size>
 		xor ebx, ebx
 		@@:
-			@ccall [printf], <09h, "%d", 0Ah>, dword[edi + ebx * 4]
+			@ccall [vprintf], <09h, "%d", 0Ah>, va_list dword[edi + ebx * 4]
 			inc ebx
 		cmp ebx, dword[.size]
 		jnz @b
@@ -77,7 +77,6 @@ section ".code" code readable executable
 .endp
 
 .proc main
-	; local procedure test
 	@ccall proc_test, 15
 	ret
 .endp

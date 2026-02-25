@@ -216,7 +216,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
 			mov r11d, dword adef
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			mov reg_dword_\#argn, dword adef
 		\\}
@@ -226,7 +226,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
 			movzx r11d, word adef
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			movzx reg_dword_\#argn, word adef
 		\\}
@@ -236,7 +236,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
 			movzx r11d, byte adef
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			movzx reg_dword_\#argn, byte adef
 		\\}
@@ -246,7 +246,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
 			mov r11, qword adef
-			mov [args_start + stack_space - stack_counter], r11
+			mov qword[args_start + stack_space - stack_counter], r11
 		rept 0\\{\\}rept 1\\{
 			movq reg_double_\#argn, qword adef
 		\\}
@@ -256,7 +256,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
 			mov r11d, dword adef
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			movd reg_double_\#argn, dword adef
 		\\}
@@ -266,7 +266,7 @@ rept 1{
 		%preproc_cmp cmpres, argn, 4
 		movzx r11d, word adef
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			movd reg_double_\#argn, r11d
 		\\}
@@ -284,7 +284,7 @@ rept 1{
 			else
 				movzx r11d, adef
 			end if
-			mov [args_start + stack_space - stack_counter], r11d
+			mov dword[args_start + stack_space - stack_counter], r11d
 		rept 0\\{\\}rept 1\\{
 			if mem_size = 8
 				mov reg_qword_\#argn, adef
@@ -335,7 +335,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], adef
+			mov qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			mov reg_qword_\#argn, adef
 		\\}
@@ -344,7 +344,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], adef
+			mov dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			mov reg_dword_\#argn, adef
 		\\}
@@ -353,17 +353,25 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], adef
+			mov word[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movzx reg_dword_\#argn, adef
 		\\}
 	\}
-	macro fast@load_byte_GPR args&\{fast@load_word_GPR args\}
+	macro fast@load_byte_GPR args_start, stack_space, stack_counter, argn, adef\{
+		stack_counter = stack_counter + 8
+		%preproc_cmp cmpres, argn, 4
+		match =GT, cmpres\\{
+			mov byte[args_start + stack_space - stack_counter], adef
+		rept 0\\{\\}rept 1\\{
+			movzx reg_dword_\#argn, adef
+		\\}
+	\}
 	macro fast@load_double_GPR args_start, stack_space, stack_counter, argn, adef\{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], adef
+			mov qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movq reg_double_\#argn, adef
 		\\}
@@ -372,7 +380,7 @@ rept 1{
 		stack_counter = stack_counter + 8
 		%preproc_cmp cmpres, argn, 4
 		match =GT, cmpres\\{
-			mov [args_start + stack_space - stack_counter], adef
+			mov dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
 			movd reg_double_\#argn, adef
 		\\}
