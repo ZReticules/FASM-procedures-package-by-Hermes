@@ -131,7 +131,11 @@ rept 1{
 			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		rept 0\\{\\}rept 1\\{
-			mov reg_qword_\#argn, litval
+			if litval = 0
+				xor reg_dword_\#argn, reg_dword_\#argn
+			else
+				mov reg_qword_\#argn, litval
+			end if
 		\\}
 	\}
 	macro fast@load_qword_lit args&\{
@@ -144,7 +148,11 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
-			mov reg_qword_\#argn, litval
+			if litval = 0
+				xor reg_dword_\#argn, reg_dword_\#argn
+			else
+				mov reg_dword_\#argn, litval
+			end if
 		\\}
 	\}
 	macro fast@load_word_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -154,7 +162,11 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
-			mov reg_dword_\#argn, litval
+			if litval = 0
+				xor reg_dword_\#argn, reg_dword_\#argn
+			else
+				mov reg_dword_\#argn, litval
+			end if
 		\\}
 	\}
 	macro fast@load_byte_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -164,7 +176,11 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
-			mov reg_dword_\#argn, litval
+			if litval = 0
+				xor reg_dword_\#argn, reg_dword_\#argn
+			else
+				mov reg_dword_\#argn, litval
+			end if
 		\\}
 	\}
 	macro fast@load_double_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -175,8 +191,14 @@ rept 1{
 			mov dword[args_start + stack_space - stack_counter], litval and 0xFFFFFFFF
 			mov dword[args_start + stack_space - stack_counter + 4], litval shr 32
 		rept 0\\{\\}rept 1\\{
-			mov r11, litval
-			movq reg_double_\#argn, r11
+			if litval = 0
+				pxor reg_double_\#argn, reg_double_\#argn
+			else if litval = 0xFFFFFFFFFFFFFFFF
+				pcmpeqq reg_double_\#argn, reg_double_\#argn
+			else
+				mov r11, litval
+				movq reg_double_\#argn, r11
+			end if
 		\\}
 	\}
 	macro fast@load_float_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -186,8 +208,14 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
-			mov r11d, litval
-			movd reg_double_\#argn, r11d
+			if litval = 0
+				pxor reg_double_\#argn, reg_double_\#argn
+			else if litval = 0xFFFFFFFF
+				pcmpeqq reg_double_\#argn, reg_double_\#argn
+			else
+				mov r11d, litval
+				movd reg_double_\#argn, r11d
+			end if
 		\\}
 	\}
 	macro fast@load_real_lit args_start, stack_space, stack_counter, argn, adef\{
@@ -197,8 +225,14 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], litval
 		rept 0\\{\\}rept 1\\{
-			mov r11d, litval
-			movd reg_double_\#argn, litval
+			if litval = 0
+				pxor reg_double_\#argn, reg_double_\#argn
+			else if litval = 0xFFFF
+				pcmpeqq reg_double_\#argn, reg_double_\#argn
+			else
+				mov r11d, litval
+				movd reg_double_\#argn, r11d
+			end if
 		\\}
 	\}
 	macro fast@load_qword_mem args_start, stack_space, stack_counter, argn, adef\{

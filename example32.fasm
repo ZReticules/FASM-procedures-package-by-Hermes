@@ -77,6 +77,6 @@ section ".code" code readable executable
 .endp
 
 .proc main
-	@ccall proc_test, 15
+	@ccall proc_test, qword 11 + 12
 	ret
 .endp
