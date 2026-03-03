@@ -353,7 +353,9 @@ rept 1{
 		match =GT, cmpres\\{
 			movq qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
-			movq reg_double_\#argn, adef
+			if ~reg_double_\#argn eq adef
+				movq reg_double_\#argn, adef
+			end if
 		\\}
 	\}
 	macro fast@load_float_SSE args_start, stack_space, stack_counter, argn, adef\{
@@ -362,7 +364,9 @@ rept 1{
 		match =GT, cmpres\\{
 			movd dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
-			movd reg_double_\#argn, adef
+			if ~reg_double_\#argn eq adef
+				movd reg_double_\#argn, adef
+			end if
 		\\}
 	\}
 	macro fast@load_qword_GPR args_start, stack_space, stack_counter, argn, adef\{
@@ -371,7 +375,9 @@ rept 1{
 		match =GT, cmpres\\{
 			mov qword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
-			mov reg_qword_\#argn, adef
+			if ~reg_qword_\#argn eq adef
+				mov reg_qword_\#argn, adef
+			end if
 		\\}
 	\}
 	macro fast@load_dword_GPR args_start, stack_space, stack_counter, argn, adef\{
@@ -380,7 +386,9 @@ rept 1{
 		match =GT, cmpres\\{
 			mov dword[args_start + stack_space - stack_counter], adef
 		rept 0\\{\\}rept 1\\{
-			mov reg_dword_\#argn, adef
+			if ~reg_dword_\#argn eq adef
+				mov reg_dword_\#argn, adef
+			end if
 		\\}
 	\}
 	macro fast@load_word_GPR args_start, stack_space, stack_counter, argn, adef\{

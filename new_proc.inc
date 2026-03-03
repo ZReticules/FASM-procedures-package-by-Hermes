@@ -326,14 +326,6 @@ rept 1 {
 				\\\\}
 				define _def ..bytes
 			\\\}
-			match -_mp1, src\\\{
-				define _type pointer lit
-				define _def src
-			\\\}
-			match +_mp1, src\\\{
-				define _type pointer lit
-				define _def src
-			\\\}
 			match =_type _mp1 _mp2, _type src\\\{
 				match _mp3 =_mp1 _mp4, _any1 L & addr byte word dword qword real float double _any2\\\\{
 					match [_mp5], _mp2\\\\\{
