@@ -46,7 +46,13 @@ rept 1{
 			paramshift = paramshift - paramshift and 15 + 16
 		end if
 		match _mp1, proc@name\\{
-			virtual at procorigin\#varname + paramshift + stackshift@proc + procorigin\#.regs_count * 8 + 8 * (((_mp1\\#.regs_count and 1) + 1) and 1) + 8
+			\\local loc
+			loc = procorigin\#.locals_size
+			if loc and 0xf
+				loc = (loc and 0xFFFFFFFFFFFFFFF0) + 0x10
+			end if
+			; %display_num procorigin\#.locals_size, 16
+			virtual at procorigin\#varname + paramshift + loc + stackshift@proc + procorigin\#.regs_count * 8 + 8 * (((_mp1\\#.regs_count and 1) + 1) and 1) + 8
 				varname:
 			end virtual
 		\\}
@@ -334,13 +340,13 @@ rept 1{
 	macro @set_fast_unk_mem src\{
 		sizeof@addr mem_size, src
 		if mem_size = 8
-			@get_fast_qword_mem src
+			@set_fast_qword_mem src
 		else if mem_size = 4
-			@get_fast_dword_mem src
+			@set_fast_dword_mem src
 		else if mem_size = 2
-			@get_fast_word_mem src
+			@set_fast_word_mem src
 		else
-			@get_fast_byte_mem src
+			@set_fast_byte_mem src
 		end if
 	\}
 	local src_type, src_def
