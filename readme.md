@@ -13,6 +13,8 @@ The main goal of this package is to provide a customizable and optimal set of ma
 - [Frame modes](#frame-modes)
 - [Procedure invocation](#procedure-invocation)
 	- [Side effects](#side-effects)
+		- [Accumulator destruction](#accumulator-destruction)
+		- [About passing FPU arguments](#about-passing-fpu-arguments)
 	- [Arguments](#arguments)
 		- [Size and type specifiers](#size-and-type-specifiers)
 		- [Constants](#constants)
@@ -36,12 +38,15 @@ Those argument types are allowed:
 - `WORD`  
 - `DWORD`  
 - `PWORD`  
+- `FWORD`  
 - `QWORD`  
 - `TBYTE`  
+- `TWORD`  
 - `DQWORD`  
-- `QQWORD`  
 - `XWORD`  
+- `QQWORD`  
 - `YWORD`  
+- `DQQWORD`  
 - `ZWORD`
 - Any structure made by `struct`  
 
@@ -97,9 +102,14 @@ As with procedure definition, `@ccall`, `@cdeclcall`, and `@stdcall` in x86-64 a
 All those macros have the same syntax, similar to standard macros for procedure invocation:  
 `@ccall proc [, arg1, ...]`
 ### Side effects
+#### Accumulator destruction
 In x86-64 invocation macros, xmm5 and r11 can be destroyed at any moment. In x86-32, xmm5 and eax can also be destroyed, but if eax is an argument or part of an address, it will be restored. This system is smart, so you don't need to worry about inefficiency or safety, for example:  
 `@ccall foo, [eax], eax, addr ecx + edx + 5`  
 In this case, before argument loading, eax will be saved into a stack variable, then destroyed for address calculation, then restored for the second argument, and, in case it was restored earlier, it will not be restored for the first argument. Besides, if the address contains only one register, eax will not be destroyed.  
+#### About passing FPU arguments
+When you pass value in FPU stack such as  
+`@ccall foo, double st0`  
+default conventions will pop register from the top of the FPU stack and then pass it according to calling convention. If you pass any register except st0 instruction `fxch` will be generated. This behavior is due to the fact that standard conventions require the fpu stack to be cleared before a call.  
 ### Arguments
 <u><i>All specifiers/keywords are case-sensitive and must be in lower-case.</i></u>  
 #### Size and type specifiers
@@ -119,7 +129,8 @@ If you don't use any specifier, it will be automatically selected based on the t
 | - | - | - |  
 | Memory | How defined | How defined |  
 | GPR | By itself | By itself |  
-| SSE | double | double |   
+| SSE | double | double | 
+| FPU | double | double |   
 | addr | dword | qword |  
 | numeric literal | dword | qword |  
 | separated qword | qword | qword |
@@ -130,11 +141,11 @@ Also compatibility for specifiers and argument types:
 | - | - | - | - | - | - | - | - |
 | GPR | x86-64 only | + | + | + | x86-64 only | + | + | - |
 | SSE | + | + | - | - | + | + | - |
+| FPU | + | + | - | - | + | + | - |
 | Numeric literal | + | + | + | + | + | + | + | + |
 | Memory | + | + | + | + | + | + | + | + |
 | separated qword | - | - | - | - | - | - | - |
 | addr | x86-64 only | + | - | - | - | - | - |
-
 
 #### Constants
 Like in standard invocation macros, you can pass a constant string or an array of bytes as a parameter to a procedure. It will be automatically null-terminated:
